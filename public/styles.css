@@ -1,0 +1,26 @@
+#track{
+  border: 1px blue dashed;
+  font-family: Courier;
+  color: #858585;
+  font-size: 30px;
+  position:relative;
+  word-wrap: normal;
+}
+
+#competitors{
+  border: 1px orange dashed;
+  font-family: Courier;
+  color: black;
+  font-size: 30px;
+  position: absolute;
+  top: 0;
+}
+
+#myTrack{
+  border: 1px green dashed;
+  font-family: Courier;
+  color: black;
+  font-size: 30px;
+  position: absolute;
+  top: 0;
+}
