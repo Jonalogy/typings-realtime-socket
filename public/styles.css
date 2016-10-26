@@ -1,26 +1,52 @@
+#competitors{
+  border: 2px red dashed;
+  font-family: Courier;
+  color: black;
+  font-size: 30px;
+  position: absolute;
+  padding: 0;
+  margin: 0;
+}
+
 #track{
   border: 1px blue dashed;
   font-family: Courier;
   color: #858585;
   font-size: 30px;
-  position:relative;
-  word-wrap: normal;
-}
-
-#competitors{
-  border: 1px orange dashed;
-  font-family: Courier;
-  color: black;
-  font-size: 30px;
-  position: absolute;
-  top: 0;
+  position:absolute;
+  overflow: auto;
 }
 
 #myTrack{
-  border: 1px green dashed;
+  border: 2px green dashed;
   font-family: Courier;
   color: black;
   font-size: 30px;
   position: absolute;
-  top: 0;
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+}
+
+#container{
+  padding: 0;
+  position: relative;
+  height: 90px;
+  overflow: auto;
+}
+
+#globalScreen{
+  position: absolute;
+  bottom: 0;
+}
+
+.char{
+  display: inline-block;
+  width:auto;
+  padding: 0;
+  margin: 0;
+}
+
+.space{
+  color:rgba(0, 0, 0, 0);
 }

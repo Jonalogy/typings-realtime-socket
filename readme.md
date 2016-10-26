@@ -1,3 +1,6 @@
-#### Readme
+## Readme
 
-To continue: Delete a character
+
+## Good to have Features
+* Blinking Cursor:
+ *  Replaced with `|` for the time being

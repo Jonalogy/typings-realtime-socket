@@ -1,0 +1,39 @@
+.blinking-cursor {
+  font-weight: 100;
+  font-size: 30px;
+  color: #2E3D48;
+  margin: 0;
+  padding: 0;
+  height:30px;
+  border-right: 1px double black;
+  display:inline-block;
+  -webkit-animation: 1s blink step-end infinite;
+  -moz-animation: 1s blink step-end infinite;
+  -ms-animation: 1s blink step-end infinite;
+  -o-animation: 1s blink step-end infinite;
+  animation: 1s blink step-end infinite;
+}
+@keyframes "blink" {
+  from { border-right: 1px double black;}
+  to { border-right: none; }
+}
+
+@-moz-keyframes blink {
+  from { border-right: 1px solid black;}
+  to { border-right: none; }
+}
+
+@-webkit-keyframes "blink" {
+  from { border-right: 1px solid black;}
+  to { border-right: none; }
+}
+
+@-ms-keyframes "blink" {
+  from { border-right: 1px solid black;}
+  to { border-right: none; }
+}
+
+@-o-keyframes "blink" {
+  from { border-right: 1px solid black;}
+  to { border-right: none; }
+}

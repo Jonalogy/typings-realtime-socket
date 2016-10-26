@@ -2,7 +2,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css" media="screen" title="no title">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cursor.css">
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,18 +39,25 @@
         </div>
       </div>
 
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-
+      <br><br>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-12">
+        <div id="container">
+          <br><br>
           <div id='track'></div>
-          <div><p id='competitors'></p></div>
-          <div id='myTrack'></div>
-          <div> <ul id="messages"></ul> </div>
+          <p id='competitors'></p>
+          <p id='myTrack'></p>
+          <div id="globalSceen"><ul id="messages"></ul></div>
         </div>
+      </div>
+    </div>
+
+<!--Form-->
+    <div class="container-fluid">
+      <div class="row">
+        <form action="">
+          <input id="m" autocomplete="off" /><button>Send</button>
+        </form>
       </div>
     </div>
 
@@ -61,8 +69,8 @@
     <!--Socket.io-->
       <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
       <!-- <script src="/socket.io/socket.io.js"></script>   This works because you have installed the socket package-->
-      <!-- <script src="http://code.jquery.com/jquery-1.11.1.js"></script> -->
-      <script src='client.js'></script>
+      <script src='js/client.js'></script>
+      <script src='js/caret.js'></script>
 
   </body>
 </html>
