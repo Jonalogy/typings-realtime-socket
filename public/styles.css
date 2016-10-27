@@ -1,7 +1,7 @@
 #competitors{
-  border: 2px red dashed;
+  border-right: 2px red double;
   font-family: Courier;
-  color: black;
+  color:rgba(0, 0, 0, 0);
   font-size: 30px;
   position: absolute;
   padding: 0;

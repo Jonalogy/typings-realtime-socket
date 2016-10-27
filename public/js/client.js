@@ -1,6 +1,7 @@
 var mock = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 mock = mock.split('');
 var n = mock.length;
+var keystrokes = 0;
 
 $(document).ready(()=>{
   // Socket routes
@@ -33,7 +34,7 @@ $(document).ready(()=>{
       console.log(`hello, ${$('#username').val()}`)
     })
 
-    var keystrokes = 0;
+
     $(document).keypress((event)=>{
       keystrokes ++;
       var keynote = event.key;
@@ -43,36 +44,6 @@ $(document).ready(()=>{
         $('#myTrack').append($('<div>',{class:'char'}).text(event.key));
       }
     });
-
-    function justify(){
-      console.log($(window).width(), $('#rack').width())
-      var widthDiff = ($('#track').width()) - ($('#myTrack').width())
-      console.log("Between #container & #myTrack ", widthDiff)
-      console.log('Next char:', mock[keystrokes])
-
-      var count = 0
-      for(i=keystrokes; i<n; i++){
-        count ++;
-        if(mock[i]===' ') {
-          console.log(`Next word is ${count} chars away`);
-          var nextWord = 0;
-
-          for (y=(i+1); y<n; y++){
-              if(mock[y]===' '){
-                console.log(`Next word is ${nextWord} chars long`);
-                count = 0;
-                if((nextWord*34)>widthDiff){
-                  return  nextWord
-                } else {
-                  return false
-                }
-              } //(mock[y]===' ')
-            nextWord ++;
-          }//end for()
-        }//end if()
-      }//end for()
-
-    }//END justify()
 
     $(document).keydown((event)=>{
       if(event.keyCode==8){ //backspace
@@ -107,10 +78,38 @@ $(document).ready(()=>{
 
 }) //End of DOM content loaded
 
-
 function builder() {
   for(i=0; i<n; i++ ){
     var a = $('<span>').text(mock[i]);
     $('#track').append(a);
   }//end for()
 }
+function justify() {
+      console.log($(window).width(), $('#rack').width())
+      var widthDiff = ($('#track').width()) - ($('#myTrack').width())
+      console.log("Between #container & #myTrack ", widthDiff)
+      console.log('Next char:', mock[keystrokes])
+
+      var count = 0
+      for(i=keystrokes; i<n; i++){
+        count ++;
+        if(mock[i]===' ') {
+          console.log(`Next word is ${count} chars away`);
+          var nextWord = 0;
+
+          for (y=(i+1); y<n; y++){
+              if(mock[y]===' '){
+                console.log(`Next word is ${nextWord} chars long`);
+                count = 0;
+                if((nextWord*34)>widthDiff){
+                  return  nextWord
+                } else {
+                  return false
+                }
+              } //(mock[y]===' ')
+            nextWord ++;
+          }//end for()
+        }//end if()
+      }//end for()
+
+    }//END justify()
