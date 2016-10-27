@@ -21,58 +21,73 @@ app.use(express.static('public'));
     var allRooms = {};
 
     io.on('connection',function(socket){
-    // Gobal Sockets
-      socket.on('nickname',(nickname)=>{
-        masterList[socket.id] = nickname;
-        socket.broadcast.emit('incomer',{welcome:`${nickname} is now online!`});
-        console.log(masterList)
-      });
+      // Gobal Sockets
+        socket.on('nickname', (nickname)=>{
+          masterList[socket.id] = nickname;
+          socket.broadcast.emit('incomer',{welcome:`${nickname} is now online!`});
+          console.log(masterList)
+        });
 
-      socket.on('globalMsg', function(msg){
-        console.log('message: ' + msg);
-        io.emit('globalMsg', msg);
-      });
+        socket.on('globalMsg', (msg)=>{
+          console.log('message: ' + msg);
+          io.emit('globalMsg', msg);
+        });
 
-    // Room Sockets
-      socket.on('joinGame',(nickname)=>{
-          members[nickname] = [ nickname , socket.id ];
-          if(Object.keys(members).length <= 3 ){
-            console.log(`>>>>>Total members in room${roomNum} = `,Object.keys(members).length)
-            console.log('>>>members',members);
-            socket.join('room' + roomNum);
-            io.to(`room${roomNum}`).emit('joined',
-              { room:`room${roomNum}`,
-                members: members }
-            )
-          } else {
-            allRooms[`room${roomNum}`] = members
-            roomNum ++; members = {};
-            console.log('!!! Overflow !!!', ` Starting room${roomNum}`)
-            console.log(allRooms, 'members{} =', members);
-          }
+        socket.on('disconnect',()=>{
+          delete masterList[socket.id]; //Removes user from masterList list
+          console.log('user disconnected');
+        })
 
-          console.log(io.sockets.adapter.rooms)
+      // Room Sockets
+        socket.on('joinGame', (nickname)=>{
+            if(Object.keys(members).length < 2 ){
+              fillRoom()
+            } else {
+              roomNum ++;
+              allRooms[`room${roomNum}`] = members;
+              console.log('!!! Overflow !!!', ` Starting room${roomNum}`);
+              console.log('allRooms{} =',allRooms);
+              members = {};
+              console.log('clear members{} =', members);
+              fillRoom()
+            }
 
-      });
+            // console.log(io.sockets.adapter.rooms)
+            function fillRoom(){
+              members[nickname] = [ nickname , socket.id, `room${roomNum}` ];
 
-      socket.on('keydown', function(note){
-        socket.broadcast.emit('keydown', {key: note});
-      });
+              console.log(`>>>>>Total members in room${roomNum} = `,Object.keys(members).length)
 
-      socket.on('ctrlKey', function(note){
-        console.log('ctrlKey: ' + note)
-        socket.broadcast.emit('ctrlKey', {key: note});
-      });
+              console.log('>>>members',members);
 
-      socket.on('disconnect',()=>{
-        delete masterList[socket.id]; //Removes user from masterList list
-        console.log('user disconnected');
-      })
+              socket.join('room' + roomNum);
+              io.to(`room${roomNum}`).emit('roomEntry', { room:`room${roomNum}`, members: members } );
+              console.log(`>>> `,io.nsps['/'].adapter.rooms)
+            }
+
+        });
+
+        socket.on('quitWaiting', (room)=>{
+          socket.leave(room);
+          console.log(`left ${room}!`)
+          console.log(`>>> `,io.nsps['/'].adapter.rooms)
+        });
+
+        socket.on('relayStart',(room)=>{
+          io.to(room).emit('relayStart',true)
+        });
+
+        socket.on('keydown', (note)=>{
+          socket.broadcast.emit('keydown', {key: note});
+        });
+
+        socket.on('ctrlKey', (note)=>{
+          console.log('ctrlKey: ' + note)
+          socket.broadcast.emit('ctrlKey', {key: note});
+        });
+
     });
 
 http.listen(4200,()=>{
   console.log('Typings hosted on localhost:4200');
 })
-// app.listen(3000,()=>{
-//   console.log('Listening on localhost:3000');
-// })

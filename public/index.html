@@ -40,12 +40,12 @@
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" id='quitWait'><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">Waiting for others... (<span id='paxCount'></span>/3)</h4>
             </div>
-            <div class="modal-body" id='previewPlayers'></div>
+            <div class="modal-body" id='previewBoard'></div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal" id='startGame'>Start!</button>
+              <button type="button" class="btn btn-default" id='startGame' disabled >Start!</button>
             </div>
           </div>
         </div>

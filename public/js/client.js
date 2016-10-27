@@ -3,6 +3,8 @@ var n = terrain.length;
 var keystrokes = 0;
 var round = false
 
+var roomAt = null;
+
 $(document).ready(()=>{
     var nickname = '';
     $('#nicknameModal').modal('show');
@@ -34,18 +36,29 @@ $(document).ready(()=>{
     });
 
     // Game room
-    socket.on('joined',(data)=>{
+    socket.on('roomEntry',(data)=>{
       var pax = Object.keys(data.members).length;
       console.log(`Joined Room with with ${pax - 1} other members`)
+
+      roomReady(pax);
 
       $('#paxCount').text(pax);
 
       $('#previewPlayerList').remove();
-      $('<ul>',{id: 'previewPlayerList'}).appendTo($('#previewPlayers'));
+      $('<ul>',{id: 'previewPlayerList'}).appendTo($('#previewBoard'));
       for(var player in data.members){
         $('<li>').text(player).appendTo($('#previewPlayerList'))
       }
+
+      roomAt = data.members[nickname][2] //recording current room
     })
+
+    socket.on('relayStart', (start)=>{
+      if(start === true){
+        $('#startGame').prop('disabled', true)
+        $('#startGame').click();
+      }
+    });
 
   //---Event Listeners
     $('#saveNickname').click(()=>{
@@ -62,10 +75,33 @@ $(document).ready(()=>{
       $('#waitingRoom').modal('show');
     });
 
-    $('#startGame').click(()=>{
-      console.log('Game has started!')
+    $('#quitWait').click(()=>{
+      socket.emit('quitWaiting',roomAt);
+      roomAt = null;
     });
 
+    $('#startGame').click(()=>{
+      console.log('Game has started!')
+      $('#startGame').prop('disabled', true)
+
+      var seconds = 3;
+      var timer = setInterval(countdown,1000);
+      $('#previewPlayerList').remove();
+      socket.emit('relayStart',roomAt);
+
+      function countdown() {
+        if(seconds>0){
+          $('#secCountdown').remove();
+          ($('<h1>',{id:'secCountdown'}).text(`${seconds}...`)).appendTo($('#previewBoard'))
+          seconds--;
+        } else {
+          //Any click start action will start for all players in room
+          clearInterval(timer);
+          $('#waitingRoom').modal('hide');
+        }
+      }
+
+    });
     //Printable Keys
     $(document).keypress((event)=>{
       if (round == true) { charNow() }
@@ -178,5 +214,10 @@ $(document).ready(()=>{
       console.log('CharNow -> ',terrain[(keystrokes)], `Keystrokes: ${keystrokes}`)
       if((event.key !== terrain[(keystrokes)]) && round === true){
         document.getElementById('uhohAudio').play()
+      }
+    }
+    function roomReady(pax) {
+      if (pax == 2 ){
+        $('#startGame').prop('disabled', false)
       }
     }
