@@ -1,9 +1,10 @@
-var mock = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-mock = mock.split('');
-var n = mock.length;
+var terrain = 'Lorem ipsum'; terrain = terrain.split('');
+var n = terrain.length;
 var keystrokes = 0;
+var round = false
 
 $(document).ready(()=>{
+    $('#nicknameModal').modal('show')
   // Socket routes
     var socket = io();
     console.log(socket)
@@ -30,40 +31,63 @@ $(document).ready(()=>{
     });
 
   // Event Listeners
+    $('#saveNickname').click(()=>{
+      round = true
+      console.log(`round = ${round}`)
+      $('#userNickname').text()
+    });
+
+    $('form').submit(function(){
+      if($('#myNickname').val() !== ''){
+        $('#userNickname').text(`Competing as ${$('#myNickname').val()}`)
+        $('#myNickname').val('');
+        $('#nicknameModal').modal('hide')
+        round = true
+        console.log(`round = ${round}`)
+        return false;
+      } else {
+        $('#nicknameModal').modal('show')
+      }
+    });
+
     $('#get_user').click(()=>{
       console.log(`hello, ${$('#username').val()}`)
     })
     //Printable Keys
     $(document).keypress((event)=>{
-      charNow()
-      if(event.key==mock[keystrokes]){
+      if (round == true) { charNow() }
+
+      if((event.key===terrain[keystrokes]) && round == true){
         keystrokes ++;
         console.log(justify())
         var keynote = event.key;
         if (event.key!='Enter'){
           socket.emit('keydown', keynote);
           $('#myTrack').append($('<div>',{class:'char'}).text(event.key));
-        }
-      } else {
-
-      }
+        } //END if (event.key!='Enter')
+        if (keystrokes === n) { round = false }
+      }//END if(event.key==terrain[keystrokes])
     });
 
     //Control Keys
     $(document).keydown((event)=>{
-      if(event.keyCode==8){ //backspace
-        if(keystrokes>0) { keystrokes --; }
-        console.log(`Keydown: ${event.key}`);
-        socket.emit('ctrlKey', event.keyCode);
-        $('#myTrack div').last().remove();
-      }else if(event.keyCode==32){ //space key
+      // if(event.keyCode==8){ //backspace
+      //   if(keystrokes>0) { keystrokes --; }
+      //   // charNow()
+      //   console.log(`Keydown: ${event.key}`);
+      //   socket.emit('ctrlKey', event.keyCode);
+      //   $('#myTrack div').last().remove();
+      // }else
+      if(event.keyCode==32){ //space key
         event.preventDefault();
-        keystrokes ++;
-        console.log(`Keydown: Space`);
-        socket.emit('ctrlKey', event.keyCode);
-        // var collect = $('#myTrack').text()
-        $('#myTrack').append($('<div>',{class:'char space'}).text('_'));
-        // $('#myTrack').append($('<span>',{keyId:`_`}).text('_'));
+        if (round == true) { charNow() }
+
+        if(terrain[keystrokes]===' ' && round == true){
+          keystrokes ++;
+          console.log(`Keydown: Space`);
+          socket.emit('ctrlKey', event.keyCode);
+          $('#myTrack').append($('<div>',{class:'char space'}).text('_'));
+        }
       } else if (event.keyCode==13) {
         console.log(`Keydown: ${event.key}`);
         socket.emit('ctrlKey', event.keyCode);
@@ -79,53 +103,56 @@ $(document).ready(()=>{
     });
 
  // Logic
-    trackBuilder(mock)
+    trackBuilder(terrain)
 
 }) //End of DOM content loaded
 
-function trackBuilder() {
-  for(i=0; i<n; i++ ){
-    var charHolder
-    if (mock[i]===' '){
-      charHolder= $('<div>',{class: 'track space'}).text('_');
-    } else {
-      charHolder= $('<div>',{class: 'track'}).text(mock[i]);
-    }
-    $('#track').append(charHolder);
-  }//end for()
-}
-function justify() {
-      console.log($(window).width(), $('#rack').width())
-      var widthDiff = ($('#track').width()) - ($('#myTrack').width())
-      console.log("Between #container & #myTrack ", widthDiff)
-      console.log('Next char:', mock[keystrokes])
+// R&D Repo
 
-      var count = 0
-      for(i=keystrokes; i<n; i++){
-        count ++;
-        if(mock[i]===' ') {
-          console.log(`Next word is ${count} chars away`);
-          var nextWord = 0;
-
-          for (y=(i+1); y<n; y++){
-              if(mock[y]===' '){
-                console.log(`Next word is ${nextWord} chars long`);
-                count = 0;
-                if((nextWord*34)>widthDiff){
-                  return  nextWord
-                } else {
-                  return false
-                }
-              } //(mock[y]===' ')
-            nextWord ++;
-          }//end for()
-        }//end if()
+// Function Repo
+    function trackBuilder() {
+      for(i=0; i<n; i++ ){
+        var charHolder
+        if (terrain[i]===' '){
+          charHolder= $('<div>',{class: 'track space'}).text('_');
+        } else {
+          charHolder= $('<div>',{class: 'track'}).text(terrain[i]);
+        }
+        $('#track').append(charHolder);
       }//end for()
-    }//END justify()
-function charNow() {
-  console.log('CharNow -> ',mock[(keystrokes)], `Keystrokes: ${keystrokes}`)
-  if((event.key !== mock[(keystrokes)])){
-    console.log('Wrong Key!')
-    document.getElementById('uhohAudio').play()
-  }
-}
+    }
+    function justify() {
+          console.log($(window).width(), $('#rack').width())
+          var widthDiff = ($('#track').width()) - ($('#myTrack').width())
+          console.log("Between #container & #myTrack ", widthDiff)
+          console.log('Next char:', terrain[keystrokes])
+
+          var count = 0
+          for(i=keystrokes; i<n; i++){
+            count ++;
+            if(terrain[i]===' ') {
+              console.log(`Next word is ${count} chars away`);
+              var nextWord = 0;
+
+              for (y=(i+1); y<n; y++){
+                  if(terrain[y]===' '){
+                    console.log(`Next word is ${nextWord} chars long`);
+                    count = 0;
+                    if((nextWord*34)>widthDiff){
+                      return  nextWord
+                    } else {
+                      return false
+                    }
+                  } //(terrain[y]===' ')
+                nextWord ++;
+              }//end for()
+            }//end if()
+          }//end for()
+        }//END justify()
+    function charNow() {
+      console.log('CharNow -> ',terrain[(keystrokes)], `Keystrokes: ${keystrokes}`)
+      if((event.key !== terrain[(keystrokes)])){
+        console.log('Wrong Key!')
+        document.getElementById('uhohAudio').play()
+      }
+    }
