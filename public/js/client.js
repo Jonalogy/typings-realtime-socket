@@ -55,9 +55,25 @@ $(document).ready(()=>{
 
     socket.on('relayStart', (start)=>{
       if(start === true){
+        console.log('Game has started!')
+
         $('#startGame').prop('disabled', true)
-        $('#startGame').click();
-      }
+        $('#previewPlayerList').remove();
+
+        var seconds = 3;
+        var timer = setInterval(countdown,1000);
+
+        function countdown() {
+          if(seconds>0){
+            $('#secCountdown').remove();
+            ($('<h1>',{id:'secCountdown'}).text(`${seconds}...`)).appendTo($('#previewBoard'))
+            seconds--;
+          } else {
+            //Any click start action will start for all players in room
+            clearInterval(timer);
+            $('#waitingRoom').modal('hide');
+          }
+        }      }
     });
 
   //---Event Listeners
@@ -82,12 +98,14 @@ $(document).ready(()=>{
 
     $('#startGame').click(()=>{
       console.log('Game has started!')
+
       $('#startGame').prop('disabled', true)
+      $('#previewPlayerList').remove();
+
+      socket.emit('relayStart',roomAt);
 
       var seconds = 3;
       var timer = setInterval(countdown,1000);
-      $('#previewPlayerList').remove();
-      socket.emit('relayStart',roomAt);
 
       function countdown() {
         if(seconds>0){
@@ -217,7 +235,7 @@ $(document).ready(()=>{
       }
     }
     function roomReady(pax) {
-      if (pax == 2 ){
+      if (pax == 3 ){
         $('#startGame').prop('disabled', false)
       }
     }

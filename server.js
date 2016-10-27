@@ -42,7 +42,7 @@ app.use(express.static('public'));
 
       // Room Sockets
         socket.on('joinGame', (nickname)=>{
-            if(Object.keys(members).length < 2 ){
+            if(Object.keys(members).length < 3 ){
               fillRoom()
             } else {
               roomNum ++;
