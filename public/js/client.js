@@ -32,23 +32,17 @@ $(document).ready(()=>{
 
   // Event Listeners
     $('#saveNickname').click(()=>{
-      round = true
       console.log(`round = ${round}`)
       $('#userNickname').text()
     });
 
-    $('form').submit(function(){
-      if($('#myNickname').val() !== ''){
+    $('#formNickname').submit(()=>{
         $('#userNickname').text(`Competing as ${$('#myNickname').val()}`)
         $('#myNickname').val('');
         $('#nicknameModal').modal('hide')
         round = true
         console.log(`round = ${round}`)
-        return false;
-      } else {
-        $('#nicknameModal').modal('show')
-      }
-    });
+      });
 
     $('#get_user').click(()=>{
       console.log(`hello, ${$('#username').val()}`)
