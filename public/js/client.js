@@ -4,16 +4,19 @@ var keystrokes = 0;
 var round = false
 
 $(document).ready(()=>{
-    $('#nicknameModal').modal('show')
-  // Socket routes
+    var nickname = '';
+    $('#nicknameModal').modal('show');
+
+  //---Socket routes
     var socket = io();
     console.log(socket)
 
     socket.on('incomer',(data)=>{ // New user prompt
-      $('#messages').append($('<li>').text(`>>Tada , ${data.welcome}`));
+      console.log(`${data.welcome}`);
+      $('#messages').append($('<li>').text(data.welcome));
     })
 
-    socket.on('chat message', function(msg){
+    socket.on('globalMsg', function(msg){
       $('#messages').append($('<li>').text(msg));
     });
 
@@ -30,23 +33,20 @@ $(document).ready(()=>{
       }
     });
 
-  // Event Listeners
+  //---Event Listeners
     $('#saveNickname').click(()=>{
       console.log(`round = ${round}`)
       $('#userNickname').text()
     });
 
-    $('#formNickname').submit(()=>{
-        $('#userNickname').text(`Competing as ${$('#myNickname').val()}`)
-        $('#myNickname').val('');
-        $('#nicknameModal').modal('hide')
-        round = true
-        console.log(`round = ${round}`)
-      });
-
     $('#get_user').click(()=>{
       console.log(`hello, ${$('#username').val()}`)
-    })
+    });
+
+    $('#joinGame').click(()=>{
+      socket.emit('joinGame', nickname )
+    });
+
     //Printable Keys
     $(document).keypress((event)=>{
       if (round == true) { charNow() }
@@ -90,13 +90,25 @@ $(document).ready(()=>{
       }
     })
 
-    $('form').submit(function(){
-      socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
+ //---Forms
+    $('#formNickname').submit((event)=>{
+      event.preventDefault();
+      $('#userNickname').text(`Competing as ${$('#myNickname').val()}`);
+      nickname = $('#myNickname').val()
+      $('#myNickname').val('');
+      $('#nicknameModal').modal('hide');
+      console.log(`round = ${round}`)
+      round = true
+      socket.emit('nickname', nickname)
     });
 
- // Logic
+    $('#chatForm').submit((event)=>{
+      event.preventDefault();
+      socket.emit('globalMsg', $('#chatInput').val());
+      $('#chatInput').val('');
+    });
+
+ //---Logic
     trackBuilder(terrain)
 
 }) //End of DOM content loaded
@@ -145,8 +157,7 @@ $(document).ready(()=>{
         }//END justify()
     function charNow() {
       console.log('CharNow -> ',terrain[(keystrokes)], `Keystrokes: ${keystrokes}`)
-      if((event.key !== terrain[(keystrokes)])){
-        console.log('Wrong Key!')
+      if((event.key !== terrain[(keystrokes)]) && round === true){
         document.getElementById('uhohAudio').play()
       }
     }

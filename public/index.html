@@ -1,28 +1,20 @@
 <!doctype html>
 <html>
   <head>
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="cursor.css">
+
     <title>Socket.IO chat</title>
-    <!--<style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>-->
   </head>
   <body>
-    <!--Modal-->
+  <!--Modal-->
       <div class="modal fade" id="nicknameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -31,7 +23,7 @@
             </div>
             <div class="modal-body">
               <form action="" id="formNickname">
-                <input id="myNickname" type="text" placeholder="eg. Captain Keys" autocomplete="off" />
+                <input id="myNickname" class="form-control" type="text" placeholder="eg. Captain Keys" autocomplete="off" />
 
             </div>
             <div class="modal-footer">
@@ -41,7 +33,7 @@
           </div>
         </div>
       </div>
-    <!--NavBar-->
+  <!--NavBar-->
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
@@ -59,44 +51,50 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="header-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Start<span class="sr-only">(current)</span></a></li>
+              <li class="active"><a href="#" id="joinGame">Join Game<span class="sr-only">(current)</span></a></li>
               <li><a href="#">...</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div id="container">
-          <div id='track'></div>
-          <div id='competitors'></div>
-          <div id='myTrack'></div>
+  <!--Terrain-->
+      <div class="container-fluid">
+        <div class="row">
+          <div id="container" class='col-sm-9'>
+            <div id='track'></div>
+            <div id='competitors'></div>
+            <div id='myTrack'></div>
+          </div>
+  <!--Chat Window-->
+          <div id="globalSceen" class='col-sm-3'>
+            <h4><span>Global</span> Chat</h4>
+            <ul id="messages"></ul>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="globalSceen"><ul id="messages"></ul></div>
-  <!--Footer NavBar-->
-    <div class="container-fluid" id="footer">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
+  <!--Footer input-->
+      <div class="container-fluid" id="footer">
+        <div class="row">
+          <div class="col-sm-12">
+            <form id="chatForm">
+              <div class="input-group">
+                <input id="chatInput" type="text" class="form-control" placeholder="Search for...">
                 <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Rawr!</button>
+                  <button class="btn btn-default" type="button">Rawr</button>
                 </span>
-          </div><!-- /input-group -->
+              </div><!-- /input-group -->
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-<!--Audio-->
-    <audio id='uhohAudio' src="audio/uhoh.wav"></audio>
+ <!--Audio-->
+      <audio id='uhohAudio' src="audio/uhoh.wav"></audio>
 
-<!--Socket.io-->
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    <!-- <script src="/socket.io/socket.io.js"></script>   This works because you have installed the socket package-->
-    <script src='js/client.js'></script>
-    <script src='js/caret.js'></script>
+ <!--Socket.io-->
+      <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+      <!-- <script src="/socket.io/socket.io.js"></script>   This works because you have installed the socket package-->
+      <script src='js/client.js'></script>
+      <script src='js/caret.js'></script>
 
   </body>
 </html>

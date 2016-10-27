@@ -50,8 +50,7 @@
 }
 
 #globalScreen{
-  position: absolute;
-  bottom: 0;
+  border: 2px black solid;
 }
 
 .char{

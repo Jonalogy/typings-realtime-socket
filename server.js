@@ -10,33 +10,60 @@ var io = require('socket.io')(http);
 app.use(morgan('combined'))
 app.use(express.static('public'));
 
+//---Controllers
+    app.get('/', function(req, res){
+      res.sendFile('index.html');
+    });
 
-app.get('/', function(req, res){
-  res.sendFile('index.html');
-});
+//---Sockets
+    var masterList = {};
+    var roomNum = 0; var members = [];
+    var allRooms = {};
 
-io.on('connection',function(socket){
+    io.on('connection',function(socket){
+    // Gobal Sockets
+      socket.on('nickname',(nickname)=>{
+        masterList[socket.id] = nickname;
+        socket.broadcast.emit('incomer',{welcome:`${nickname} is now online!`});
+        console.log(masterList)
+      });
 
-  socket.broadcast.emit('incomer',{welcome:'New User Joined!'});
+      socket.on('globalMsg', function(msg){
+        console.log('message: ' + msg);
+        io.emit('globalMsg', msg);
+      });
 
-  socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
+    // Room Sockets
+      socket.on('joinGame',()=>{
+          console.log(">>>>>Socket.id",socket.id)
+          if(members.length <= 2){
+            members.push(socket.id); console.log(members)
+            socket.join('room' + roomNum);
+          } else {
+            allRooms[`room${roomNum}`] = members
+            roomNum ++; members = [];
+            console.log('!!! Overflow !!!', ` Starting room${roomNum}`)
+            console.log(allRooms);
+          }
 
-  socket.on('keydown', function(note){
-    socket.broadcast.emit('keydown', {key: note});
-  });
+          console.log(io.sockets.adapter.rooms)
 
-  socket.on('ctrlKey', function(note){
-    console.log('ctrlKey: ' + note)
-    socket.broadcast.emit('ctrlKey', {key: note});
-  });
+      });
 
-  socket.on('disconnect',()=>{
-    console.log('user disconnected');
-  })
-});
+      socket.on('keydown', function(note){
+        socket.broadcast.emit('keydown', {key: note});
+      });
+
+      socket.on('ctrlKey', function(note){
+        console.log('ctrlKey: ' + note)
+        socket.broadcast.emit('ctrlKey', {key: note});
+      });
+
+      socket.on('disconnect',()=>{
+        delete masterList[socket.id]; //Removes user from masterList list
+        console.log('user disconnected');
+      })
+    });
 
 http.listen(4200,()=>{
   console.log('Typings hosted on localhost:4200');
