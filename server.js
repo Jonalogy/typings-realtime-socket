@@ -17,7 +17,7 @@ app.use(express.static('public'));
 
 //---Sockets
     var masterList = {};
-    var roomNum = 0; var members = [];
+    var roomNum = 0; var members = {};
     var allRooms = {};
 
     io.on('connection',function(socket){
@@ -34,16 +34,21 @@ app.use(express.static('public'));
       });
 
     // Room Sockets
-      socket.on('joinGame',()=>{
-          console.log(">>>>>Socket.id",socket.id)
-          if(members.length <= 2){
-            members.push(socket.id); console.log(members)
+      socket.on('joinGame',(nickname)=>{
+          members[nickname] = [ nickname , socket.id ];
+          if(Object.keys(members).length <= 3 ){
+            console.log(`>>>>>Total members in room${roomNum} = `,Object.keys(members).length)
+            console.log('>>>members',members);
             socket.join('room' + roomNum);
+            io.to(`room${roomNum}`).emit('joined',
+              { room:`room${roomNum}`,
+                members: members }
+            )
           } else {
             allRooms[`room${roomNum}`] = members
-            roomNum ++; members = [];
+            roomNum ++; members = {};
             console.log('!!! Overflow !!!', ` Starting room${roomNum}`)
-            console.log(allRooms);
+            console.log(allRooms, 'members{} =', members);
           }
 
           console.log(io.sockets.adapter.rooms)

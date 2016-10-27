@@ -33,6 +33,20 @@ $(document).ready(()=>{
       }
     });
 
+    // Game room
+    socket.on('joined',(data)=>{
+      var pax = Object.keys(data.members).length;
+      console.log(`Joined Room with with ${pax - 1} other members`)
+
+      $('#paxCount').text(pax);
+
+      $('#previewPlayerList').remove();
+      $('<ul>',{id: 'previewPlayerList'}).appendTo($('#previewPlayers'));
+      for(var player in data.members){
+        $('<li>').text(player).appendTo($('#previewPlayerList'))
+      }
+    })
+
   //---Event Listeners
     $('#saveNickname').click(()=>{
       console.log(`round = ${round}`)
@@ -45,6 +59,11 @@ $(document).ready(()=>{
 
     $('#joinGame').click(()=>{
       socket.emit('joinGame', nickname )
+      $('#waitingRoom').modal('show');
+    });
+
+    $('#startGame').click(()=>{
+      console.log('Game has started!')
     });
 
     //Printable Keys

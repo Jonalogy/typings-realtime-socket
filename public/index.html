@@ -14,9 +14,9 @@
     <title>Socket.IO chat</title>
   </head>
   <body>
-  <!--Modal-->
+  <!--Front Modal-->
       <div class="modal fade" id="nicknameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title" id="myModalLabel">What's Your Callsign?</h4>
@@ -33,6 +33,24 @@
           </div>
         </div>
       </div>
+
+  <!--Waiting Room Modal-->
+
+      <div class="modal fade" id="waitingRoom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Waiting for others... (<span id='paxCount'></span>/3)</h4>
+            </div>
+            <div class="modal-body" id='previewPlayers'></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" id='startGame'>Start!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
   <!--NavBar-->
       <nav class="navbar navbar-default">
         <div class="container-fluid">
