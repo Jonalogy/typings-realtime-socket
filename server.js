@@ -1,10 +1,12 @@
 var morgan = require('morgan');
 var express = require('express');
 var path = express('path')
+const port = process.env.PORT || 4200
 
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
 
 // this sets a static directory for the views
 app.use(morgan('combined'))
@@ -88,6 +90,6 @@ app.use(express.static('public'));
 
     });
 
-http.listen(4200,()=>{
+http.listen(port,()=>{
   console.log('Typings hosted on localhost:4200');
 })
