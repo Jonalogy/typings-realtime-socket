@@ -19,3 +19,14 @@ In-game user input does not text wrap until container div is full. Was working o
 1. Start game
 2. End game
 3. Restart game
+
+```javascript
+masterList[socket.id] = [nickname, room];
+```
+
+```javascript
+allRooms[`room${roomNum}`] = members;
+```
+```javascript
+members[nickname] = [ nickname , socket.id, `room${roomNum}` ];
+```

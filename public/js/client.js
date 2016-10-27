@@ -22,16 +22,15 @@ $(document).ready(()=>{
       $('#messages').append($('<li>').text(msg));
     });
 
-    socket.on('keydown', function(note){
-        $('#competitors').append($('<div>',{class:'char', keyId:`${note.key}`}).text(note.key));
+    socket.on('keydown', function(data){
+      console.log('>>Data ', data)
+        $(`#${data['player'][0]}`).append($('<div>',{class:'competitor char'}).text(`${data['key']}`));
     });
 
     socket.on('ctrlKey', function(ctrl){
       console.log(`ctrl:, ${ctrl}`)
-      if(ctrl.key==8){//backspace
-        $('#competitors div').last().remove();
-      } else if (ctrl.key==32) {
-        $('#competitors').append($('<div>',{class:'char space', keyId:`_`}).text('_'));
+      if (ctrl['key'] == 32) {
+        $(`#${ctrl['player'][0]}`).append($('<div>',{class:'char space competitor'}).text('_'));
       }
     });
 
@@ -47,18 +46,30 @@ $(document).ready(()=>{
       $('#previewPlayerList').remove();
       $('<ul>',{id: 'previewPlayerList'}).appendTo($('#previewBoard'));
       for(var player in data.members){
-        $('<li>').text(player).appendTo($('#previewPlayerList'))
+        $('<li>',{id: `${player}`}).text(player).appendTo($('#previewPlayerList'))
       }
 
       roomAt = data.members[nickname][2] //recording current room
     })
 
-    socket.on('relayStart', (start)=>{
-      if(start === true){
+    socket.on('quitWaiting',(player)=>{
+      console.log(player[0] + ' left the room')
+      $(`#${player}`).remove()
+      var pax = ($('#paxCount').text()) - 1;
+      $('#paxCount').text(pax);
+    });
+
+    socket.on('relayStart', (roomPlayers)=>{
         console.log('Game has started!')
 
         $('#startGame').prop('disabled', true)
         $('#previewPlayerList').remove();
+
+        for(var player in roomPlayers){
+          if (player != nickname){
+            $('<div>',{class:'competitors', id: `${player}`}).appendTo($('#container'));
+          }
+        }
 
         var seconds = 3;
         var timer = setInterval(countdown,1000);
@@ -73,8 +84,12 @@ $(document).ready(()=>{
             clearInterval(timer);
             $('#waitingRoom').modal('hide');
           }
-        }      }
+         }
     });
+
+    socket.on('winner',(player)=>{
+      $('#messages').append($('<li>').text(`${player[0]} won the race!`));
+    })
 
   //---Event Listeners
     $('#saveNickname').click(()=>{
@@ -132,19 +147,15 @@ $(document).ready(()=>{
           socket.emit('keydown', keynote);
           $('#myTrack').append($('<div>',{class:'char'}).text(event.key));
         } //END if (event.key!='Enter')
-        if (keystrokes === n) { round = false }
+        if (keystrokes === n) {
+          socket.emit('winner', nickname)
+          round = false;
+        }
       }//END if(event.key==terrain[keystrokes])
     });
 
     //Control Keys
     $(document).keydown((event)=>{
-      // if(event.keyCode==8){ //backspace
-      //   if(keystrokes>0) { keystrokes --; }
-      //   // charNow()
-      //   console.log(`Keydown: ${event.key}`);
-      //   socket.emit('ctrlKey', event.keyCode);
-      //   $('#myTrack div').last().remove();
-      // }else
       if(event.keyCode==32){ //space key
         event.preventDefault();
         if (round == true) { charNow() }
@@ -185,8 +196,6 @@ $(document).ready(()=>{
     trackBuilder(terrain)
 
 }) //End of DOM content loaded
-
-// R&D Repo
 
 // Function Repo
     function trackBuilder() {

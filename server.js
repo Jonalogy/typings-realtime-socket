@@ -25,7 +25,7 @@ app.use(express.static('public'));
     io.on('connection',function(socket){
       // Gobal Sockets
         socket.on('nickname', (nickname)=>{
-          masterList[socket.id] = nickname;
+          masterList[socket.id] = [nickname, null];
           socket.broadcast.emit('incomer',{welcome:`${nickname} is now online!`});
           console.log(masterList)
         });
@@ -37,21 +37,21 @@ app.use(express.static('public'));
 
         socket.on('disconnect',()=>{
           delete masterList[socket.id]; //Removes user from masterList list
-          console.log('user disconnected');
+          console.log('user disconnected', masterList[socket.id]);
         })
 
       // Room Sockets
         socket.on('joinGame', (nickname)=>{
-            if(Object.keys(members).length < 3 ){
-              fillRoom()
-            } else {
-              roomNum ++;
+            masterList[socket.id][1] = (`room${roomNum}`)
+            console.log('masterList>>>', masterList)
+            fillRoom()
+            if(Object.keys(members).length === 3 ){
               allRooms[`room${roomNum}`] = members;
-              console.log('!!! Overflow !!!', ` Starting room${roomNum}`);
+              roomNum ++;
+              console.log('!!! Room Filled !!!', ` Starting room${roomNum}`);
               console.log('allRooms{} =',allRooms);
               members = {};
               console.log('clear members{} =', members);
-              fillRoom()
             }
 
             // console.log(io.sockets.adapter.rooms)
@@ -70,23 +70,39 @@ app.use(express.static('public'));
         });
 
         socket.on('quitWaiting', (room)=>{
+          console.log(masterList[socket.id])
+          io.to(room).emit('quitWaiting', masterList[socket.id]);
           socket.leave(room);
           console.log(`left ${room}!`)
           console.log(`>>> `,io.nsps['/'].adapter.rooms)
         });
 
         socket.on('relayStart',(room)=>{
-          io.to(room).emit('relayStart',true)
+          io.to(room).emit('relayStart',allRooms[room])
         });
 
         socket.on('keydown', (note)=>{
-          socket.broadcast.emit('keydown', {key: note});
+          var data = {
+            player: masterList[socket.id],
+            key: note
+          }
+
+          socket.broadcast.emit('keydown', data);
         });
 
-        socket.on('ctrlKey', (note)=>{
-          console.log('ctrlKey: ' + note)
-          socket.broadcast.emit('ctrlKey', {key: note});
+        socket.on('ctrlKey', (keyCode)=>{
+          console.log('ctrlKey: ' + keyCode)
+
+          var data = {
+            player: masterList[socket.id],
+            key: keyCode
+          }
+          socket.broadcast.emit('ctrlKey', data);
         });
+
+        socket.on('winner',()=>{
+          io.emit('winner', masterList[socket.id]);
+        })
 
     });
 

@@ -11,7 +11,7 @@
   bottom: 0;
 }
 
-#competitors{
+.competitors{
   border: 2px rgba(0, 0, 0, 0); double;
   border-right: 2px red double;
   font-family: Courier;
