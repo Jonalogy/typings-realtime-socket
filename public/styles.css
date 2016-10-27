@@ -1,4 +1,9 @@
+.track{
+    display: inline-block;
+}
+
 #competitors{
+  border: 2px rgba(0, 0, 0, 0); double;
   border-right: 2px red double;
   font-family: Courier;
   color:rgba(0, 0, 0, 0);
@@ -9,7 +14,7 @@
 }
 
 #track{
-  border: 1px blue dashed;
+  border: 2px blue double;
   font-family: Courier;
   color: #858585;
   font-size: 30px;
@@ -31,7 +36,7 @@
 #container{
   padding: 0;
   position: relative;
-  height: 90px;
+  height: 300px;
   overflow: auto;
 }
 

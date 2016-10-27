@@ -33,21 +33,26 @@ $(document).ready(()=>{
     $('#get_user').click(()=>{
       console.log(`hello, ${$('#username').val()}`)
     })
-
-
+    //Printable Keys
     $(document).keypress((event)=>{
-      keystrokes ++;
-      var keynote = event.key;
-      if (event.key!='Enter'){
-        socket.emit('keydown', keynote);
+      charNow()
+      if(event.key==mock[keystrokes]){
+        keystrokes ++;
         console.log(justify())
-        $('#myTrack').append($('<div>',{class:'char'}).text(event.key));
+        var keynote = event.key;
+        if (event.key!='Enter'){
+          socket.emit('keydown', keynote);
+          $('#myTrack').append($('<div>',{class:'char'}).text(event.key));
+        }
+      } else {
+
       }
     });
 
+    //Control Keys
     $(document).keydown((event)=>{
       if(event.keyCode==8){ //backspace
-        keystrokes --;
+        if(keystrokes>0) { keystrokes --; }
         console.log(`Keydown: ${event.key}`);
         socket.emit('ctrlKey', event.keyCode);
         $('#myTrack div').last().remove();
@@ -74,14 +79,19 @@ $(document).ready(()=>{
     });
 
  // Logic
-    builder(mock)
+    trackBuilder(mock)
 
 }) //End of DOM content loaded
 
-function builder() {
+function trackBuilder() {
   for(i=0; i<n; i++ ){
-    var a = $('<span>').text(mock[i]);
-    $('#track').append(a);
+    var charHolder
+    if (mock[i]===' '){
+      charHolder= $('<div>',{class: 'track space'}).text('_');
+    } else {
+      charHolder= $('<div>',{class: 'track'}).text(mock[i]);
+    }
+    $('#track').append(charHolder);
   }//end for()
 }
 function justify() {
@@ -111,5 +121,11 @@ function justify() {
           }//end for()
         }//end if()
       }//end for()
-
     }//END justify()
+function charNow() {
+  console.log('CharNow -> ',mock[(keystrokes)], `Keystrokes: ${keystrokes}`)
+  if((event.key !== mock[(keystrokes)])){
+    console.log('Wrong Key!')
+    document.getElementById('uhohAudio').play()
+  }
+}

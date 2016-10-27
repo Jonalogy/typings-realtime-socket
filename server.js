@@ -24,7 +24,6 @@ io.on('connection',function(socket){
     io.emit('chat message', msg);
   });
 
-
   socket.on('keydown', function(note){
     socket.broadcast.emit('keydown', {key: note});
   });
