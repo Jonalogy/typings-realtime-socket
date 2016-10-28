@@ -51,15 +51,16 @@ app.use(express.static('public'));
         socket.on('joinGame', (nickname)=>{
             user = masterList[socket.id]
             user[1] = (`room${roomNum}`)
-            console.log('masterList>>>', masterList)
+            console.log(`${nickname} joined room${roomNum}`)
+            console.log('masterList{} => ', masterList)
             fillRoom()
             if(Object.keys(members).length === 3 ){
               allRooms[`room${roomNum}`] = members;
               roomNum ++;
               console.log('!!! Room Full !!!', ` Starting room${roomNum}`);
-              console.log('allRooms{} =',allRooms);
+              console.log('allRooms{} => ',allRooms);
               members = {};
-              console.log('clear members{} =', members);
+              console.log('clear members{} => ', members);
             }
 
             // console.log(io.sockets.adapter.rooms)
