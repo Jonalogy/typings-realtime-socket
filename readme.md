@@ -5,11 +5,12 @@
 * Only type forward, no turning back!
 
 ## Current Issue
-Unexplained crash on Heroku or multiuser environment. Suspect on masterList{}
+Unexplained crash on Heroku or multiuser environment. Suspect on masterList{}. Try validating welcome modal to disable button if input is empty.
 
 ## Known Issues
 1.  @Safari: Player input does not show up but competitors' does. Empty character divs are appended to `#myTrack` instead.
 2. Entry modal accepts no input for nickname
+3. Chat input doesn't accept spaces.
 
 ## Good to have Features
 * Blinking Cursor:
