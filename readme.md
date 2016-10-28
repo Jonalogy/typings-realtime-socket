@@ -2,10 +2,10 @@
 
 #### Rules
 * Each room 3 players max
-*  
+* Only type forward, no turning back!
 
 ## Current Issue
-In-game user input does not text wrap until container div is full. Was working on `justify()` to calculate the next work length of `terrain` to decide if div should be created in new line.
+Unexplained crash on Heroku or multiuser environment. Suspect on masterList{}
 
 ## Known Issues
 1.  @Safari: Player input does not show up but competitors' does. Empty character divs are appended to `#myTrack` instead.
@@ -13,13 +13,9 @@ In-game user input does not text wrap until container div is full. Was working o
 
 ## Good to have Features
 * Blinking Cursor:
-*  Replaced with `|` for the time being
 
-## Continue on:
-1. Start game
-2. End game
-3. Restart game
 
+Some server side data handling models.
 ```javascript
 masterList[socket.id] = [nickname, room];
 ```
