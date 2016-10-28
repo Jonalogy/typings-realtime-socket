@@ -69,6 +69,6 @@
   overflow: auto;
 }
 
-#globalScreen{
-  border: 2px black solid;
+.msgs{
+  background-color: #ccffff;
 }
