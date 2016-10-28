@@ -5,7 +5,6 @@ const port = process.env.PORT || 4200
 
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
 
 // this sets a static directory for the views
@@ -21,13 +20,17 @@ app.use(express.static('public'));
     var masterList = {};
     var roomNum = 0; var members = {};
     var allRooms = {};
+    var io = require('socket.io')(http);
+
 
     io.on('connection',function(socket){
+
       // Gobal Sockets
         socket.on('nickname', (nickname)=>{
           masterList[socket.id] = [nickname, null];
           socket.broadcast.emit('incomer',{welcome:`${nickname} is now online!`});
-          console.log(masterList)
+          console.log(`${nickname} added to masterList{}`)
+          console.log(`masterList{} => `, masterList)
         });
 
         socket.on('globalMsg', (msg)=>{
@@ -36,13 +39,15 @@ app.use(express.static('public'));
         });
 
         socket.on('disconnect',()=>{
+          var user = masterList[socket.id]
+          console.log( user[0] , ' disconnected'  );
           delete masterList[socket.id]; //Removes user from masterList list
-          console.log('user disconnected', masterList[socket.id]);
         })
 
       // Room Sockets
         socket.on('joinGame', (nickname)=>{
-            masterList[socket.id][1] = (`room${roomNum}`)
+            user = masterList[socket.id]
+            user[1] = (`room${roomNum}`)
             console.log('masterList>>>', masterList)
             fillRoom()
             if(Object.keys(members).length === 3 ){
@@ -115,6 +120,9 @@ app.use(express.static('public'));
 
           io.emit('winToGlobe', masterList[socket.id]);
         })
+
+
+
 
     });
 
