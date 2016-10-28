@@ -11,9 +11,28 @@
   bottom: 0;
 }
 
+#track{
+  border: 2px blue solid;
+  font-family: Courier;
+  color: #858585;
+  font-size: 30px;
+  position:absolute;
+  overflow: auto;
+}
+
+.char{
+  border: 0px;
+  display: inline-block;
+  width:auto;
+  padding: 0;
+  margin: 0;
+}
+
+.space{
+  color:rgba(0, 0, 0, 0);
+}
+
 .competitors{
-  border: 2px rgba(0, 0, 0, 0); double;
-  border-right: 2px red double;
   font-family: Courier;
   color:rgba(0, 0, 0, 0);
   font-size: 30px;
@@ -22,17 +41,13 @@
   margin: 0;
 }
 
-#track{
-  border: 2px blue double;
-  font-family: Courier;
-  color: #858585;
-  font-size: 30px;
-  position:absolute;
-  overflow: auto;
+.lastChar{
+  border-right: 2px red double;
+  display: inline-block;
 }
 
+
 #myTrack{
-  border: 2px green dashed;
   font-family: Courier;
   color: black;
   font-size: 30px;
@@ -40,6 +55,11 @@
   padding: 0;
   margin: 0;
   overflow: auto;
+}
+
+.myLastChar{
+  border-right: 2px green double;
+  display: inline-block;
 }
 
 #container{
@@ -51,15 +71,4 @@
 
 #globalScreen{
   border: 2px black solid;
-}
-
-.char{
-  display: inline-block;
-  width:auto;
-  padding: 0;
-  margin: 0;
-}
-
-.space{
-  color:rgba(0, 0, 0, 0);
 }

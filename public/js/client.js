@@ -1,4 +1,4 @@
-var terrain = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+var terrain = 'Lorem ipsum dolor sit amet';
 
 terrain = terrain.split('');
 var n = terrain.length;
@@ -26,13 +26,17 @@ $(document).ready(()=>{
 
     socket.on('keydown', function(data){
       console.log('>>Data ', data)
-        $(`#${data['player'][0]}`).append($('<div>',{class:'competitor char'}).text(`${data['key']}`));
+        $(`#${data['player'][0]} :last`).css('border-color','rgba(0, 0, 0, 0)').removeClass('lastChar')
+
+        $(`#${data['player'][0]}`).append($('<div>',{class:'competitor char lastChar'}).text(`${data['key']}`));
     });
 
     socket.on('ctrlKey', function(ctrl){
       console.log(`ctrl:, ${ctrl}`)
       if (ctrl['key'] == 32) {
-        $(`#${ctrl['player'][0]}`).append($('<div>',{class:'char space competitor'}).text('_'));
+        $(`#${ctrl['player'][0]} :last`).css('border-color','rgba(0, 0, 0, 0)').removeClass('lastChar')
+
+        $(`#${ctrl['player'][0]}`).append($('<div>',{class:'char space competitor lastChar'}).text('_'));
       }
     });
 
@@ -85,11 +89,15 @@ $(document).ready(()=>{
             //Any click start action will start for all players in room
             clearInterval(timer);
             $('#waitingRoom').modal('hide');
+            $('#secCountdown').remove()
           }
          }
+
+        round = true
     });
 
     socket.on('winner',(player)=>{
+      round = false; keystrokes = 0;
       $('#messages').append($('<li>').text(`${player[0]} won the race!`));
     })
 
@@ -133,9 +141,11 @@ $(document).ready(()=>{
           //Any click start action will start for all players in room
           clearInterval(timer);
           $('#waitingRoom').modal('hide');
+          $('#secCountdown').remove()
         }
       }
 
+      round = true;
     });
     //Printable Keys
     $(document).keypress((event)=>{
@@ -147,11 +157,13 @@ $(document).ready(()=>{
         var keynote = event.key;
         if (event.key!='Enter'){
           socket.emit('keydown', keynote);
-          $('#myTrack').append($('<div>',{class:'char'}).text(event.key));
+          $('#myTrack :last').css('border-color','rgba(0, 0, 0, 0)').removeClass('myLastChar')
+
+          $('#myTrack').append($('<div>',{class:'char myLastChar'}).text(event.key));
         } //END if (event.key!='Enter')
         if (keystrokes === n) {
           socket.emit('winner', roomAt)
-          round = false;
+          round = false; keystrokes = 0;
         }
       }//END if(event.key==terrain[keystrokes])
     });
@@ -166,14 +178,16 @@ $(document).ready(()=>{
           keystrokes ++;
           console.log(`Keydown: Space`);
           socket.emit('ctrlKey', event.keyCode);
-          $('#myTrack').append($('<div>',{class:'char space'}).text('_'));
+
+          $('#myTrack :last').css('border-color','rgba(0, 0, 0, 0)').removeClass('myLastChar')
+
+          $('#myTrack').append($('<div>',{class:'char space myLastChar'}).text('_'));
         }
-      } else if (event.keyCode==13) {
-        console.log(`Keydown: ${event.key}`);
-        socket.emit('ctrlKey', event.keyCode);
-        // var collect = $('#myTrack').text()
-        // $('#myTrack').text(collect + ' ');
-      }
+        if (keystrokes === n) {
+          socket.emit('winner', roomAt)
+          round = false; keystrokes = 0;
+        }
+       }
     })
 
  //---Forms
@@ -184,7 +198,6 @@ $(document).ready(()=>{
       $('#myNickname').val('');
       $('#nicknameModal').modal('hide');
       console.log(`round = ${round}`)
-      round = true
       socket.emit('nickname', nickname)
     });
 
