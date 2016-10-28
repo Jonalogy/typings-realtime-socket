@@ -25,9 +25,10 @@ app.use(express.static('public'));
 
     io.on('connection',function(socket){
 
+      masterList[socket.id] = []
       // Gobal Sockets
         socket.on('nickname', (nickname)=>{
-          masterList[socket.id] = [nickname, null];
+          masterList[socket.id][0] = nickname;
           socket.broadcast.emit('incomer',{welcome:`${nickname} is now online!`});
           console.log(`${nickname} added to masterList{}`)
           console.log(`masterList{} => `, masterList)
