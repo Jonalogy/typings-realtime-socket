@@ -43,7 +43,7 @@ app.use(express.static('public'));
       // Room Sockets
         socket.on('joinGame', (nickname)=>{
             masterList[socket.id][1] = (`room${roomNum}`)
-            // console.log('masterList>>>', masterList)
+            console.log('masterList>>>', masterList)
             fillRoom()
             if(Object.keys(members).length === 3 ){
               allRooms[`room${roomNum}`] = members;
@@ -60,11 +60,11 @@ app.use(express.static('public'));
 
               console.log(`>>>>>Total members in room${roomNum} = `,Object.keys(members).length)
 
-              console.log('>>>members',members);
+              // console.log('>>>members',members);
 
               socket.join('room' + roomNum);
               io.to(`room${roomNum}`).emit('roomEntry', { room:`room${roomNum}`, members: members } );
-              console.log('>>>',io.nsps['/'].adapter.rooms[`room${roomNum}`].sockets)
+              // console.log('>>>',io.nsps['/'].adapter.rooms[`room${roomNum}`].sockets)
             }
 
         });
@@ -103,6 +103,8 @@ app.use(express.static('public'));
         socket.on('winner',(room)=>{
           // console.log('Refer to socket',io.of('/').connected[socket.id])
 
+          io.to(room).emit('winner',masterList[socket.id])
+
           var inRoom = io.nsps['/'].adapter.rooms[`${room}`].sockets
 
           for(var player in inRoom){
@@ -111,7 +113,7 @@ app.use(express.static('public'));
 
           delete allRooms[`${room}`];
 
-          io.emit('winner', masterList[socket.id]);
+          io.emit('winToGlobe', masterList[socket.id]);
         })
 
     });

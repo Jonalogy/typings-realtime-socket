@@ -1,4 +1,4 @@
-var terrain = 'Lorem ipsum dolor sit amet';
+var terrain = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 
 terrain = terrain.split('');
 var n = terrain.length;
@@ -96,10 +96,18 @@ $(document).ready(()=>{
         round = true
     });
 
-    socket.on('winner',(player)=>{
-      round = false; keystrokes = 0;
+    socket.on('winToGlobe',(player)=>{
       $('#messages').append($('<li>').text(`${player[0]} won the race!`));
+      $('.char').remove();
     })
+
+    socket.on('winner', (player)=>{
+      round = false; keystrokes = 0;
+      $('#winnerModal').modal('show')
+      $('#winnerNickname').text(`${player[0]}`)
+    });
+
+
 
   //---Event Listeners
     $('#saveNickname').click(()=>{
@@ -164,6 +172,10 @@ $(document).ready(()=>{
         if (keystrokes === n) {
           socket.emit('winner', roomAt)
           round = false; keystrokes = 0;
+          $('.char').remove();
+
+          $('#winnerModal').modal('show')
+          $('#winnerNickname').text(nickname)
         }
       }//END if(event.key==terrain[keystrokes])
     });
@@ -186,6 +198,10 @@ $(document).ready(()=>{
         if (keystrokes === n) {
           socket.emit('winner', roomAt)
           round = false; keystrokes = 0;
+          $('.char').remove();
+
+          $('#winnerModal').modal('show')
+          $('#winnerNickname').text(nickname)
         }
        }
     })
