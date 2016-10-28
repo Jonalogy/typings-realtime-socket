@@ -40,8 +40,11 @@ app.use(express.static('public'));
 
         socket.on('disconnect',()=>{
           var user = masterList[socket.id]
-          console.log( user[0] , ' disconnected'  );
-          delete masterList[socket.id]; //Removes user from masterList list
+          if (user != undefined){
+            console.log( user[0] , ' disconnected'  );
+            delete masterList[socket.id]; //Removes user from masterList list
+            console.log(`masterList{} => `, masterList)
+          }
         })
 
       // Room Sockets
@@ -75,11 +78,16 @@ app.use(express.static('public'));
         });
 
         socket.on('quitWaiting', (room)=>{
-          console.log(masterList[socket.id])
-          io.to(room).emit('quitWaiting', masterList[socket.id]);
-          socket.leave(room);
-          console.log(`left ${room}!`)
-          console.log(`>>> `,io.nsps['/'].adapter.rooms)
+          var user = masterList[socket.id]
+          console.log(user)
+
+          if(user == undefined){
+            io.to(room).emit('quitWaiting', masterList[socket.id]);
+            socket.leave(room);
+            console.log(`left ${room}!`)
+            console.log(`>>> `,io.nsps['/'].adapter.rooms)
+          }
+
         });
 
         socket.on('relayStart',(room)=>{
