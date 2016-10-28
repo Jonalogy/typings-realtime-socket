@@ -107,8 +107,6 @@ $(document).ready(()=>{
       $('#winnerNickname').text(`${player[0]}`)
     });
 
-
-
   //---Event Listeners
     $('#saveNickname').click(()=>{
       console.log(`round = ${round}`)

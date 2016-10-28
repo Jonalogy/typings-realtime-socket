@@ -49,8 +49,10 @@ app.use(express.static('public'));
 
       // Room Sockets
         socket.on('joinGame', (nickname)=>{
+
             user = masterList[socket.id]
             user[1] = (`room${roomNum}`)
+
             console.log(`${nickname} joined room${roomNum}`)
             console.log('masterList{} => ', masterList)
             fillRoom()
@@ -129,9 +131,6 @@ app.use(express.static('public'));
 
           io.emit('winToGlobe', masterList[socket.id]);
         })
-
-
-
 
     });
 
