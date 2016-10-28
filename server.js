@@ -48,7 +48,7 @@ app.use(express.static('public'));
             if(Object.keys(members).length === 3 ){
               allRooms[`room${roomNum}`] = members;
               roomNum ++;
-              console.log('!!! Room Filled !!!', ` Starting room${roomNum}`);
+              console.log('!!! Room Full !!!', ` Starting room${roomNum}`);
               console.log('allRooms{} =',allRooms);
               members = {};
               console.log('clear members{} =', members);
