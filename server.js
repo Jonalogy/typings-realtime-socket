@@ -84,11 +84,11 @@ app.use(express.static('public'));
           var user = masterList[socket.id]
           console.log(user)
 
-          if(user == undefined){
+          if(user != undefined){
             io.to(room).emit('quitWaiting', masterList[socket.id]);
             socket.leave(room);
-            console.log(`left ${room}!`)
-            console.log(`>>> `,io.nsps['/'].adapter.rooms)
+            // console.log(`left ${room}!`)
+            // console.log(`>>> `,io.nsps['/'].adapter.rooms)
           }
 
         });
